@@ -1,3 +1,4 @@
+mod root_nameserver_resolver;
 use clap::{Parser, ValueEnum};
 
 // https://www.cloudflare.com/learning/dns/dns-records/
@@ -13,7 +14,7 @@ enum RecordType {
 }
 
 #[derive(Debug, Parser)]
-struct Args {
+pub struct Resolution {
     /// Domain to look up (e.g. github.com)
     domain: String,
 
@@ -23,8 +24,10 @@ struct Args {
 
 // Invoked like `my-dns github.com A`
 fn main() {
-    let args = Args::parse();
-    let domain = args.domain;
-    let record_type = args.record_type;
+    let resolution = Resolution::parse();
+    let domain = resolution.domain;
+    let record_type = resolution.record_type;
     println!("Looking for Domain: {} with record {:?}...", domain, record_type);
+
+    root_nameserver_resolver::resolve();
 }
