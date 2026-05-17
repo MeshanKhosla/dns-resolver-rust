@@ -13,3 +13,7 @@ It was one of the first things I thought of. It seems pretty technical and non-t
 
 ## Why Rust
 No real reason, just wanted to use it since I haven't in a while and I want to go to the [Seattle Rust User Group](https://www.meetup.com/seattle-rust-user-group/) meetup in Bellevue and have something to talk about.
+
+## Some realizations as I go
+1. Wow I haven't been in a code editor and felt "stuck" for a long time
+2. Oh man it's so hard to avoid AI. I can't turn off Google's AI overview
