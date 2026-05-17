@@ -1,6 +1,6 @@
-use std::{io::Error, net::UdpSocket, time::Duration};
-use rand::{seq::IndexedRandom};
 use crate::Resolution;
+use rand::seq::IndexedRandom;
+use std::{io::Error, net::UdpSocket, time::Duration};
 
 #[derive(Debug)]
 struct RootServer {
@@ -80,7 +80,10 @@ impl RootServer {
 
 // TODO: Return Result type and get rid of expects
 pub fn resolve(resolution: &Resolution) {
-    println!("[Root nameserver resolution] Querying for domain: {} with record {:?}", resolution.domain, resolution.record_type);
+    println!(
+        "[Root nameserver resolution] Querying for domain: {} with record {:?}",
+        resolution.domain, resolution.record_type
+    );
     let random_root_server = ROOT_SERVERS
         .choose(&mut rand::rng())
         .expect("Root server should exist");

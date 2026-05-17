@@ -1,4 +1,3 @@
-
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1
 /// RR means Resource Record
 /// +---------------------+
@@ -85,7 +84,7 @@ struct DnsHeader {
     /// 0               No error condition
     /// 1               Format error - The name server was
     ///                 unable to interpret the query.
-    /// 
+    ///
     /// 2               Server failure - The name server was
     ///                 unable to process this query due to a
     ///                 problem with the name server.
@@ -105,7 +104,7 @@ struct DnsHeader {
     ///                 server may not wish to provide the
     ///                 information to the particular requester,
     ///                 or a name server may not wish to perform
-    ///                 a particular operation (e.g., zone transfer) 
+    ///                 a particular operation (e.g., zone transfer)
     ///                 for particular data.
     ///
     /// 6-15            Reserved for future use.
@@ -129,10 +128,6 @@ struct DnsHeader {
 }
 
 #[derive(Debug)]
-struct DnsQuestion {
-
-}
+struct DnsQuestion {}
 #[derive(Debug)]
-struct ResourceRecord {
-
-}
+struct ResourceRecord {}

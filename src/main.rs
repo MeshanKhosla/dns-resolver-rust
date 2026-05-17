@@ -1,5 +1,5 @@
-mod root_nameserver_resolver;
 mod dns;
+mod root_nameserver_resolver;
 use clap::{Parser, ValueEnum};
 
 // https://www.cloudflare.com/learning/dns/dns-records/
@@ -26,7 +26,10 @@ pub struct Resolution {
 // Invoked like `my-dns github.com A`
 fn main() {
     let resolution = Resolution::parse();
-    println!("Starting resolution for domain: {} with record {:?}...", resolution.domain, resolution.record_type);
+    println!(
+        "Starting resolution for domain: {} with record {:?}...",
+        resolution.domain, resolution.record_type
+    );
 
     root_nameserver_resolver::resolve(&resolution);
 }
