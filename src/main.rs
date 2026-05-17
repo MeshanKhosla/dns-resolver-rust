@@ -25,9 +25,7 @@ pub struct Resolution {
 // Invoked like `my-dns github.com A`
 fn main() {
     let resolution = Resolution::parse();
-    let domain = resolution.domain;
-    let record_type = resolution.record_type;
-    println!("Looking for Domain: {} with record {:?}...", domain, record_type);
+    println!("Starting resolution for domain: {} with record {:?}...", resolution.domain, resolution.record_type);
 
-    root_nameserver_resolver::resolve();
+    root_nameserver_resolver::resolve(&resolution);
 }
