@@ -2,6 +2,12 @@ use std::{io::Error, net::UdpSocket, time::Duration};
 use rand::{seq::IndexedRandom};
 use crate::Resolution;
 
+#[derive(Debug)]
+struct RootServer {
+    hostname: &'static str,
+    ipv4: &'static str,
+}
+
 // https://www.iana.org/domains/root/servers
 const ROOT_SERVERS: [RootServer; 13] = [
     RootServer {
@@ -57,12 +63,6 @@ const ROOT_SERVERS: [RootServer; 13] = [
         ipv4: "202.12.27.33",
     },
 ];
-
-#[derive(Debug)]
-struct RootServer {
-    hostname: &'static str,
-    ipv4: &'static str
-}
 
 impl RootServer {
     fn resolve(&self, resolution: &Resolution) -> Result<&str, Error> {

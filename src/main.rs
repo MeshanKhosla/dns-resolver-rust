@@ -1,4 +1,5 @@
 mod root_nameserver_resolver;
+mod dns;
 use clap::{Parser, ValueEnum};
 
 // https://www.cloudflare.com/learning/dns/dns-records/
