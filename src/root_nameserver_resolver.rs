@@ -1,4 +1,4 @@
-use crate::Resolution;
+use crate::{Resolution, dns::build_dns_message};
 use rand::seq::IndexedRandom;
 use std::{io::Error, net::UdpSocket, time::Duration};
 
@@ -72,8 +72,9 @@ impl RootServer {
         let socket = UdpSocket::bind("0.0.0.0:0")?;
         socket.set_read_timeout(Some(Duration::from_secs(5)))?;
         // TODO: Build DNS message and replace first param
+        let dns_message = build_dns_message(&resolution);
+        dbg!(dns_message);
         // socket.send_to(&[0, 10], &server_ip);
-
         Ok("Future IP")
     }
 }

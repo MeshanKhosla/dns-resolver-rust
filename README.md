@@ -18,4 +18,9 @@ No real reason, just wanted to use it since I haven't in a while and I want to g
 1. Wow I haven't been in a code editor and felt "stuck" for a long time
 2. Oh man it's so hard to avoid AI. I can't turn off Google's AI overview
 3. The borrowing idea in Rust is cool! I can pass a variable with `&` to have the function borrow it and read it. Or I can give a mutable borrow with `&mut`. Or I can give up ownership by just passing the variable and I can get it back only if it's returned
+borrow: “you can look at this thing here”
+mutable borrow: “you alone can modify this thing here”
+move: “this is yours now; I won’t use the old owner anymore”
+clone: “make a separate owned copy”
 4. Learning with AI is hard, it is really eager to just give you the code
+5. It's a bit better with Study/Learning mode

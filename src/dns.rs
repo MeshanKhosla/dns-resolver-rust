@@ -1,4 +1,5 @@
-use crate::RecordType;
+use crate::{RecordType, Resolution};
+use rand::RngExt;
 
 // https://datatracker.ietf.org/doc/html/rfc1035#autoid-41:~:text=RCODE,-Response
 #[derive(Debug)]
@@ -9,6 +10,13 @@ enum ResponseCode {
     NameError,      // 3
     NotImplemented, // 4
     Refused,        // 5
+}
+
+/// https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#:~:text=DNS%20CLASSes,-Expert
+/// Only supporting IN for now but Chaosnet seems fun
+#[derive(Debug)]
+enum RecordClass {
+    Internet, // 1 (IN)
 }
 
 // https://datatracker.ietf.org/doc/html/rfc1035#autoid-41:~:text=OPCODE,-A
@@ -33,11 +41,12 @@ enum Opcode {
 /// |      Additional     | RRs holding additional information
 /// +---------------------+
 #[derive(Debug)]
-struct DnsMessage {
+pub struct DnsMessage {
     /// DNS Header
     header: DnsHeader,
 
-    /// the question for the name server. It's a vector to match RFC, but we will almost always a length of 1
+    /// The question for the name server. It's a vector to match RFC, but we will almost always a length of 1
+    /// and the name is singular to also match the RFC
     question: Vec<DnsQuestion>,
 
     /// RRs answering the question
@@ -189,11 +198,14 @@ struct DnsQuestion {
     /// The values for this field include all codes valid for a
     /// TYPE field, together with some more general codes which
     /// can match more than one type of RR.
-    qtype: u16,
+    /// Note: Technically there are a lot more than RecordType (like "ANY")
+    /// but RecordType is sufficient for this implementation
+    /// https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#:~:text=Resource%20Record%20%28RR%29%20TYPEs,-Expert
+    qtype: RecordType,
 
     /// A two octet code that specifies the class of the query.
     /// For example, the QCLASS field is IN for the Internet.
-    qclass: u16,
+    qclass: RecordClass,
 }
 
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.3
@@ -247,4 +259,38 @@ struct ResourceRecord {
     /// For example, the if the TYPE is A and the CLASS is IN,
     /// the RDATA field is a 4 octet ARPA Internet address.
     rdata: Vec<u8>,
+}
+
+pub fn build_dns_message(resolution: &Resolution) -> DnsMessage {
+    let mut rng = rand::rng();
+    let id: u16 = rng.random();
+    let header = DnsHeader {
+        id,
+        qr: false,
+        opcode: Opcode::Query,
+        aa: false,
+        tc: false,
+        rd: false,
+        ra: false,
+        z: 0,
+        rcode: ResponseCode::NoError,
+        qdcount: 1,
+        ancount: 0,
+        nscount: 0,
+        arcount: 0,
+    };
+
+    let question = DnsQuestion {
+        qname: resolution.domain.clone(),
+        qtype: resolution.record_type.clone(),
+        qclass: RecordClass::Internet,
+    };
+
+    DnsMessage {
+        header,
+        question: vec![question],
+        answer: Vec::new(),
+        authority: Vec::new(),
+        additional: Vec::new(),
+    }
 }
