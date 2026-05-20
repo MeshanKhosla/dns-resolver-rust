@@ -59,6 +59,13 @@ pub struct DnsMessage {
     additional: Vec<ResourceRecord>,
 }
 
+impl DnsMessage {
+    pub fn encode(&self) -> [u8; 3] {
+        println!("Yessir {:?}", self.answer);
+        [1, 4, 4]
+    }
+}
+
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
 ///                                 1  1  1  1  1  1
 ///   0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5

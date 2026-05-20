@@ -73,6 +73,7 @@ impl RootServer {
         socket.set_read_timeout(Some(Duration::from_secs(5)))?;
         // TODO: Build DNS message and replace first param
         let dns_message = build_dns_message(&resolution);
+        let test = dns_message.encode();
         dbg!(dns_message);
         // socket.send_to(&[0, 10], &server_ip);
         Ok("Future IP")
