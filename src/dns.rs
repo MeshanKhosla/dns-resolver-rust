@@ -1,3 +1,24 @@
+use crate::RecordType;
+
+// https://datatracker.ietf.org/doc/html/rfc1035#autoid-41:~:text=RCODE,-Response
+#[derive(Debug)]
+enum ResponseCode {
+    NoError,        // 0
+    FormatError,    // 1
+    ServerFailure,  // 2
+    NameError,      // 3
+    NotImplemented, // 4
+    Refused,        // 5
+}
+
+// https://datatracker.ietf.org/doc/html/rfc1035#autoid-41:~:text=OPCODE,-A
+#[derive(Debug)]
+enum Opcode {
+    Query,  // 0
+    IQuery, // 1
+    Status, // 2
+}
+
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1
 /// RR means Resource Record
 /// +---------------------+
@@ -30,6 +51,21 @@ struct DnsMessage {
 }
 
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
+///                                 1  1  1  1  1  1
+///   0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                      ID                       |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   |
+///  +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                    QDCOUNT                    |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                    ANCOUNT                    |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                    NSCOUNT                    |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                    ARCOUNT                    |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 #[derive(Debug)]
 struct DnsHeader {
     /// A 16 bit identifier assigned by the program that
@@ -50,7 +86,7 @@ struct DnsHeader {
     /// 2               a server status request (STATUS)
     /// 3-15            reserved for future use
     /// Note: We use u8 because there is no u4
-    opcode: u8,
+    opcode: Opcode,
 
     /// Authoritative Answer - this bit is valid in responses,
     /// and specifies that the responding name server is an
@@ -108,7 +144,7 @@ struct DnsHeader {
     ///                 for particular data.
     ///
     /// 6-15            Reserved for future use.
-    rcode: u8,
+    rcode: ResponseCode,
 
     /// An unsigned 16 bit integer specifying the number of
     /// entries in the question section.
@@ -127,6 +163,18 @@ struct DnsHeader {
     arcount: u16,
 }
 
+/// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.2
+///                               1  1  1  1  1  1
+/// 0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                                               |
+/// /                     QNAME                     /
+/// /                                               /
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                     QTYPE                     |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                     QCLASS                    |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 #[derive(Debug)]
 struct DnsQuestion {
     /// A domain name represented as a sequence of labels, where
@@ -135,7 +183,7 @@ struct DnsQuestion {
     /// zero length octet for the null label of the root.  Note
     /// that this field may be an odd number of octets; no
     /// padding is used.
-    qname: u16,
+    qname: String,
 
     /// A two octet code which specifies the type of the query.
     /// The values for this field include all codes valid for a
@@ -147,5 +195,56 @@ struct DnsQuestion {
     /// For example, the QCLASS field is IN for the Internet.
     qclass: u16,
 }
+
+/// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.3
+///                               1  1  1  1  1  1
+/// 0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                                               |
+/// /                                               /
+/// /                      NAME                     /
+/// |                                               |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                      TYPE                     |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                     CLASS                     |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                      TTL                      |
+/// |                                               |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+/// |                   RDLENGTH                    |
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--|
+/// /                     RDATA                     /
+/// /                                               /
+/// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 #[derive(Debug)]
-struct ResourceRecord {}
+struct ResourceRecord {
+    /// A domain name to which this resource record pertains.
+    name: String,
+
+    /// two octets containing one of the RR type codes. This
+    /// field specifies the meaning of the data in the RDATA field.
+    r#type: RecordType,
+
+    /// two octets which specify the class of the data in the
+    /// RDATA field.
+    class: u16,
+
+    /// A 32 bit unsigned integer that specifies the time
+    /// interval (in seconds) that the resource record may be
+    /// cached before it should be discarded.  Zero values are
+    /// interpreted to mean that the RR can only be used for the
+    /// transaction in progress, and should not be cached.
+    ttl: u32,
+
+    /// An unsigned 16 bit integer that specifies the length in
+    /// octets of the RDATA field.
+    rdlength: u16,
+
+    /// A variable length string of octets that describes the
+    /// resource.  The format of this information varies
+    /// according to the TYPE and CLASS of the resource record.
+    /// For example, the if the TYPE is A and the CLASS is IN,
+    /// the RDATA field is a 4 octet ARPA Internet address.
+    rdata: Vec<u8>,
+}
