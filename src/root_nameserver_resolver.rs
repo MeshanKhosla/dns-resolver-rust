@@ -1,4 +1,4 @@
-use crate::{Resolution, dns::build_dns_message};
+use crate::{Resolution, dns::build_dns_message, dns_wireformat::WireFormat};
 use rand::seq::IndexedRandom;
 use std::{io::Error, net::UdpSocket, time::Duration};
 
@@ -74,8 +74,7 @@ impl RootServer {
         // TODO: Build DNS message and replace first param
         let dns_message = build_dns_message(&resolution);
         let test = dns_message.encode();
-        dbg!(dns_message);
-        // socket.send_to(&[0, 10], &server_ip);
+        socket.send_to(&[0, 10], &server_ip);
         Ok("Future IP")
     }
 }

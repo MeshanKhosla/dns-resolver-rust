@@ -59,13 +59,6 @@ pub struct DnsMessage {
     additional: Vec<ResourceRecord>,
 }
 
-impl DnsMessage {
-    pub fn encode(&self) -> [u8; 3] {
-        println!("Yessir {:?}", self.answer);
-        [1, 4, 4]
-    }
-}
-
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
 ///                                 1  1  1  1  1  1
 ///   0  1  2  3  4  5  6  7  8  9  0  1  2  3  4  5
@@ -83,7 +76,7 @@ impl DnsMessage {
 /// |                    ARCOUNT                    |
 /// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 #[derive(Debug)]
-struct DnsHeader {
+pub struct DnsHeader {
     /// A 16 bit identifier assigned by the program that
     /// generates any kind of query.  This identifier is copied
     /// the corresponding reply and can be used by the requester
@@ -192,7 +185,7 @@ struct DnsHeader {
 /// |                     QCLASS                    |
 /// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 #[derive(Debug)]
-struct DnsQuestion {
+pub struct DnsQuestion {
     /// A domain name represented as a sequence of labels, where
     /// each label consists of a length octet followed by that
     /// number of octets.  The domain name terminates with the
@@ -237,7 +230,7 @@ struct DnsQuestion {
 /// /                                               /
 /// +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 #[derive(Debug)]
-struct ResourceRecord {
+pub struct ResourceRecord {
     /// A domain name to which this resource record pertains.
     name: String,
 
