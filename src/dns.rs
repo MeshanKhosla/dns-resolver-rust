@@ -43,20 +43,20 @@ enum Opcode {
 #[derive(Debug)]
 pub struct DnsMessage {
     /// DNS Header
-    header: DnsHeader,
+    pub header: DnsHeader,
 
     /// The question for the name server. It's a vector to match RFC, but we will almost always a length of 1
     /// and the name is singular to also match the RFC
-    question: Vec<DnsQuestion>,
+    pub question: Vec<DnsQuestion>,
 
     /// RRs answering the question
-    answer: Vec<ResourceRecord>,
+    pub answer: Vec<ResourceRecord>,
 
     /// RRs pointing toward an authority
-    authority: Vec<ResourceRecord>,
+    pub authority: Vec<ResourceRecord>,
 
     /// RRs holding additional information
-    additional: Vec<ResourceRecord>,
+    pub additional: Vec<ResourceRecord>,
 }
 
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.1
@@ -81,11 +81,11 @@ pub struct DnsHeader {
     /// generates any kind of query.  This identifier is copied
     /// the corresponding reply and can be used by the requester
     /// to match up replies to outstanding queries.
-    id: u16,
+    pub id: u16,
 
     /// A one bit field that specifies whether this message is a
     /// query (0), or a response (1).
-    qr: bool,
+    pub qr: bool,
 
     /// A four bit field that specifies kind of query in this
     /// message.  This value is set by the originator of a query
@@ -95,33 +95,33 @@ pub struct DnsHeader {
     /// 2               a server status request (STATUS)
     /// 3-15            reserved for future use
     /// Note: We use u8 because there is no u4
-    opcode: Opcode,
+    pub opcode: Opcode,
 
     /// Authoritative Answer - this bit is valid in responses,
     /// and specifies that the responding name server is an
     /// authority for the domain name in question section.
     /// Note that the contents of the answer section may have
     /// multiple owner names because of aliases.
-    aa: bool,
+    pub aa: bool,
 
     /// TrunCation - specifies that this message was truncated
     /// due to length greater than that permitted on the
     /// transmission channel.
-    tc: bool,
+    pub tc: bool,
 
     /// Recursion Desired - this bit may be set in a query and
     /// is copied into the response.  If RD is set, it directs
     /// the name server to pursue the query recursively.
     /// Recursive query support is optional.
-    rd: bool,
+    pub rd: bool,
 
     /// Recursion Available - this be is set or cleared in a
     /// response, and denotes whether recursive query support is
     /// available in the name server.
-    ra: bool,
+    pub ra: bool,
 
     /// Reserved/DNSSEC-related bits. Keep as 0 for now.
-    z: u8,
+    pub z: u8,
 
     /// Response code - this 4 bit field is set as part of
     /// responses.  The values have the following
@@ -153,23 +153,23 @@ pub struct DnsHeader {
     ///                 for particular data.
     ///
     /// 6-15            Reserved for future use.
-    rcode: ResponseCode,
+    pub rcode: ResponseCode,
 
     /// An unsigned 16 bit integer specifying the number of
     /// entries in the question section.
-    qdcount: u16,
+    pub qdcount: u16,
 
     /// An unsigned 16 bit integer specifying the number of
     /// resource records in the answer section.
-    ancount: u16,
+    pub ancount: u16,
 
     /// An unsigned 16 bit integer specifying the number of name
     /// server resource records in the authority records section.
-    nscount: u16,
+    pub nscount: u16,
 
     /// An unsigned 16 bit integer specifying the number of
     /// resource records in the additional records section.
-    arcount: u16,
+    pub arcount: u16,
 }
 
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.2
@@ -192,7 +192,7 @@ pub struct DnsQuestion {
     /// zero length octet for the null label of the root.  Note
     /// that this field may be an odd number of octets; no
     /// padding is used.
-    qname: String,
+    pub qname: String,
 
     /// A two octet code which specifies the type of the query.
     /// The values for this field include all codes valid for a
@@ -201,11 +201,11 @@ pub struct DnsQuestion {
     /// Note: Technically there are a lot more than RecordType (like "ANY")
     /// but RecordType is sufficient for this implementation
     /// https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#:~:text=Resource%20Record%20%28RR%29%20TYPEs,-Expert
-    qtype: RecordType,
+    pub qtype: RecordType,
 
     /// A two octet code that specifies the class of the query.
     /// For example, the QCLASS field is IN for the Internet.
-    qclass: RecordClass,
+    pub qclass: RecordClass,
 }
 
 /// https://datatracker.ietf.org/doc/html/rfc1035#section-4.1.3
@@ -232,33 +232,33 @@ pub struct DnsQuestion {
 #[derive(Debug)]
 pub struct ResourceRecord {
     /// A domain name to which this resource record pertains.
-    name: String,
+    pub name: String,
 
     /// two octets containing one of the RR type codes. This
     /// field specifies the meaning of the data in the RDATA field.
-    r#type: RecordType,
+    pub r#type: RecordType,
 
     /// two octets which specify the class of the data in the
     /// RDATA field.
-    class: u16,
+    pub class: u16,
 
     /// A 32 bit unsigned integer that specifies the time
     /// interval (in seconds) that the resource record may be
     /// cached before it should be discarded.  Zero values are
     /// interpreted to mean that the RR can only be used for the
     /// transaction in progress, and should not be cached.
-    ttl: u32,
+    pub ttl: u32,
 
     /// An unsigned 16 bit integer that specifies the length in
     /// octets of the RDATA field.
-    rdlength: u16,
+    pub rdlength: u16,
 
     /// A variable length string of octets that describes the
     /// resource.  The format of this information varies
     /// according to the TYPE and CLASS of the resource record.
     /// For example, the if the TYPE is A and the CLASS is IN,
     /// the RDATA field is a 4 octet ARPA Internet address.
-    rdata: Vec<u8>,
+    pub rdata: Vec<u8>,
 }
 
 pub fn build_dns_message(resolution: &Resolution) -> DnsMessage {
