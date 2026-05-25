@@ -24,3 +24,4 @@ move: “this is yours now; I won’t use the old owner anymore”
 clone: “make a separate owned copy”
 4. Learning with AI is hard, it is really eager to just give you the code
 5. It's a bit better with Study/Learning mode
+6. Enums are typically copied, anything that can be copied implicitly should also be cloneable explicitly

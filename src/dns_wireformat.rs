@@ -1,4 +1,4 @@
-use crate::dns::{DnsHeader, DnsMessage, DnsQuestion, ResourceRecord};
+use crate::dns::{DnsHeader, DnsMessage, DnsQuestion, Opcode, ResourceRecord};
 
 /// The encoder/decoder for a DNS Message
 
@@ -28,7 +28,15 @@ impl WireFormat for DnsMessage {
 
 impl WireFormat for DnsHeader {
     fn encode(&self) -> Vec<u8> {
-        todo!("Not implemented")
+        let mut res: Vec<u8> = Vec::new();
+        res.extend(self.id.to_be_bytes());
+        let mut flags: u16 = 0;
+        // TODO: This is not correct, i should bit shift `flags`
+        // res.push(if self.qr {1} else {0});
+        // res.push(match_opcode(self.opcode));
+
+        res.extend(flags.to_be_bytes());
+        res
     }
 
     fn decode(bytes: &[u8]) -> Self {
@@ -53,5 +61,13 @@ impl WireFormat for ResourceRecord {
 
     fn decode(bytes: &[u8]) -> Self {
         todo!("Not implemented")
+    }
+}
+
+fn match_opcode(opcode: Opcode) -> u8 {
+    match opcode {
+        Opcode::Query => 0,
+        Opcode::IQuery => 1,
+        Opcode::Status => 2,
     }
 }

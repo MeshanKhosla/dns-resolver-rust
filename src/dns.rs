@@ -20,8 +20,8 @@ enum RecordClass {
 }
 
 // https://datatracker.ietf.org/doc/html/rfc1035#autoid-41:~:text=OPCODE,-A
-#[derive(Debug)]
-enum Opcode {
+#[derive(Debug, Clone, Copy)]
+pub enum Opcode {
     Query,  // 0
     IQuery, // 1
     Status, // 2
