@@ -71,10 +71,11 @@ impl RootServer {
         // Send from random local port
         let socket = UdpSocket::bind("0.0.0.0:0")?;
         socket.set_read_timeout(Some(Duration::from_secs(5)))?;
-        // TODO: Build DNS message and replace first param
         let dns_message = build_dns_message(&resolution);
-        let test = dns_message.encode();
-        socket.send_to(&[0, 10], &server_ip);
+        let result = socket.send_to(dns_message.encode().as_slice(), &server_ip);
+        // TODO: recv
+        dbg!(result);
+        // TODO: This is probably wrong, it will likely be a DNS Message/RR
         Ok("Future IP")
     }
 }

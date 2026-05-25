@@ -36,6 +36,10 @@ impl WireFormat for DnsHeader {
         // res.push(match_opcode(self.opcode));
 
         res.extend(flags.to_be_bytes());
+        res.extend(self.qdcount.to_be_bytes());
+        res.extend(self.ancount.to_be_bytes());
+        res.extend(self.nscount.to_be_bytes());
+        res.extend(self.arcount.to_be_bytes());
         res
     }
 
